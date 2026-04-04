@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-const API_BASE = "http://localhost:3001";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export default function AdminDashboard() {
   const [activeAlertsCount, setActiveAlertsCount] = useState(0);
@@ -27,6 +27,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
+
         const res = await fetch(`${API_BASE}/alerts`);
         if (res.ok) {
           const data = await res.json();
