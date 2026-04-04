@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  role      String   @default("TOURIST") // TOURIST, AUTHORITY, ADMIN
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  trips     Trip[]
+}
+
+model Trip {
+  id           String        @id @default(uuid())
+  title        String
+  userId       String
+  user         User          @relation(fields: [userId], references: [id])
+  startDate    DateTime      @default(now())
+  endDate      DateTime?
+  status       String        @default("ACTIVE") // ACTIVE, COMPLETED, CANCELLED
+  locationLogs LocationLog[]
+  alerts       SafetyAlert[]
+  budgetLogs   BudgetLog[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model LocationLog {
+  id        String   @id @default(uuid())
+  tripId    String
+  trip      Trip     @relation(fields: [tripId], references: [id])
+  latitude  Float
+  longitude Float
+  altitude  Float?
+  timestamp DateTime @default(now())
+}
+
+model SafetyAlert {
+  id        String   @id @default(uuid())
+  tripId    String
+  trip      Trip     @relation(fields: [tripId], references: [id])
+  type      String   // ANOMALY, SOS, WEATHER, BUDGET_OVERFLOW
+  severity  String   // LOW, MEDIUM, HIGH, CRITICAL
+  message   String
+  status    String   @default("OPEN") // OPEN, RESOLVED, DISMISSED
+  createdAt DateTime @default(now())
+}
+
+model BudgetLog {
+  id          String   @id @default(uuid())
+  tripId      String
+  trip        Trip     @relation(fields: [tripId], references: [id])
+  amount      Float
+  category    String   // TRAVEL, FOOD, ACCOMMODATION, MISC
+  description String?
+  timestamp   DateTime @default(now())
+}
