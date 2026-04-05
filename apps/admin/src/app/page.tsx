@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 
-const API_BASE = "https://travelshield-1-tiw2.onrender.com/alerts";
+const API_BASE = "https://travelshield-1-tiw2.onrender.com";
 
 export default function AdminDashboard() {
   const [activeAlertsCount, setActiveAlertsCount] = useState(0);
